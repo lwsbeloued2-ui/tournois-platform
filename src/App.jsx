@@ -418,7 +418,10 @@ if (validTriplets.length === 0) {
   alert("يجب إدخال ثلاثية مكتملة واحدة على الأقل");
   return;
 }
-      await addDoc(collection(db, "players"), {
+    console.log(validTriplets);
+console.log(club);
+console.log(phone); 
+await addDoc(collection(db, "players"), {
 
         club,
         phone,
@@ -432,7 +435,7 @@ if (validTriplets.length === 0) {
     } catch (error) {
 
       console.error(error);
-      alert("حدث خطأ");
+      alert(error.message);
 
     }
   };
