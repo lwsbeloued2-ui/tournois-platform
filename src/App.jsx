@@ -418,14 +418,15 @@ if (validTriplets.length === 0) {
   alert("يجب إدخال ثلاثية مكتملة واحدة على الأقل");
   return;
 }
-    console.log(validTriplets);
-console.log(club);
-console.log(phone); 
+   
 await addDoc(collection(db, "players"), {
 
         club,
         phone,
-        triplets: validTriplets,
+        triplets: validTriplets.map((triplet, index) => ({
+  number: index + 1,
+  players: triplet,
+})),
         createdAt: new Date(),
 
       });
