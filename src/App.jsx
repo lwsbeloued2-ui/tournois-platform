@@ -354,6 +354,20 @@ export default function EventRegistrationPlatform() {
 
   const [phone, setPhone] = useState("");
 const [registeredTriplets, setRegisteredTriplets] = useState([]);
+const maxTriplets = club
+  ? Math.floor(clubsData[club].players.length / 3)
+  : 0;
+
+const filledTriplets = triplets.filter(
+  (triplet) =>
+    triplet[0] !== "" &&
+    triplet[1] !== "" &&
+    triplet[2] !== ""
+);
+
+const remainingTriplets = club
+  ? maxTriplets - filledTriplets.length
+  : 0;
 useEffect(() => {
   const fetchClubData = async () => {
     if (!club) return;
@@ -364,6 +378,12 @@ useEffect(() => {
     if (docSnap.exists()) {
       const data = docSnap.data();
       setRegisteredTriplets(data.triplets || []);
+
+setTriplets(
+  data.triplets
+    ? data.triplets.map((t) => t.players)
+    : []
+);
     } else {
       setRegisteredTriplets([]);
     }
@@ -787,24 +807,44 @@ margin: "0 auto",
 
           </div>
 
-          <button
-  type="submit"
-  style={{
-    width: "100%",
-    padding: "18px",
-    borderRadius: "20px",
-    background: "#0077ff",
-    color: "white",
-    fontSize: "26px",
-    fontWeight: "bold",
-    border: "none",
-    cursor: "pointer",
-    textAlign: "center",
-    marginTop: "20px",
-  }}
->
-  تسجيل الآن
-</button>
+          {remainingTriplets > 0 ? (
+  <button
+    type="submit"
+    style={{
+      width: "100%",
+      padding: "18px",
+      borderRadius: "20px",
+      background: "#0077ff",
+      color: "white",
+      fontSize: "26px",
+      fontWeight: "bold",
+      border: "none",
+      cursor: "pointer",
+      textAlign: "center",
+      marginTop: "20px",
+    }}
+  >
+    تسجيل الآن
+  </button>
+) : (
+  <button
+    type="button"
+    style={{
+      width: "100%",
+      padding: "18px",
+      borderRadius: "20px",
+      background: "#16a34a",
+      color: "white",
+      fontSize: "26px",
+      fontWeight: "bold",
+      border: "none",
+      textAlign: "center",
+      marginTop: "20px",
+    }}
+  >
+    تغيير الثلاثيات
+  </button>
+)}
 
         </form>
 
