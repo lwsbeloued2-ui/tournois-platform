@@ -399,6 +399,7 @@ setTriplets(
     setIsAuthorized(false);
 
     if (selectedClub) {
+      setTriplets([]);
 
       const totalTriplets =
         Math.floor(
@@ -460,13 +461,19 @@ if (validTriplets.length === 0) {
   return;
 }
    
-await setDoc(doc(db, "players", club), {
+ await setDoc(doc(db, "players", club), {
   club,
   phone,
-  triplets: validTriplets.map((triplet, index) => ({
-    number: index + 1,
-    players: triplet,
-  })),
+
+  triplets: [
+    ...registeredTriplets,
+
+    ...filledTriplets.map((triplet, index) => ({
+      number: registeredTriplets.length + index + 1,
+      players: triplet,
+    })),
+  ],
+
   createdAt: new Date(),
 });
 
