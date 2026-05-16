@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { db } from "./firebase";
-import { collection, addDoc } from "firebase/firestore";
-
+import { addDoc, collection, doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+} from "firebase/firestore";
 export default function EventRegistrationPlatform() {
 
   const clubsData = {
@@ -349,7 +353,24 @@ export default function EventRegistrationPlatform() {
   const [triplets, setTriplets] = useState([]);
 
   const [phone, setPhone] = useState("");
+const [registeredTriplets, setRegisteredTriplets] = useState([]);
+useEffect(() => {
+  const fetchClubData = async () => {
+    if (!club) return;
 
+    const docRef = doc(db, "players", club);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      setRegisteredTriplets(data.triplets || []);
+    } else {
+      setRegisteredTriplets([]);
+    }
+  };
+
+  fetchClubData();
+}, [club]);
   // اختيار النادي
   const handleClubChange = (selectedClub) => {
 
@@ -419,17 +440,15 @@ if (validTriplets.length === 0) {
   return;
 }
    
-await addDoc(collection(db, "players"), {
-
-        club,
-        phone,
-        triplets: validTriplets.map((triplet, index) => ({
-  number: index + 1,
-  players: triplet,
-})),
-        createdAt: new Date(),
-
-      });
+await setDoc(doc(db, "players", club), {
+  club,
+  phone,
+  triplets: validTriplets.map((triplet, index) => ({
+    number: index + 1,
+    players: triplet,
+  })),
+  createdAt: new Date(),
+});
 
       alert("تم التسجيل بنجاح 🎉");
 
